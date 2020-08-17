@@ -27,19 +27,14 @@ def related_queries(list_of_keywords):
             
 def get_istanbul_coefficent_series_as_reference(keyword):
     pytrend = TrendReq()
+    # 'TR-34' as geo parameter returns the data for the city Istanbul
     pytrend.build_payload(
          kw_list=[keyword],
          cat=0,
-         timeframe='2017-01-01 2020-05-01',   # '2020-01-01 2020-02-01',
+         timeframe='2017-01-01 2020-05-01',
          geo='TR-34',
          gprop='')
     data_ist_45_m = pytrend.interest_over_time()
-    
-    print(data_ist_45_m.columns)
-    problematic_column_name = ''
-    for c in data_ist_45_m.columns:
-        if keyword in c and ':' in c:
-            data_ist_45_m = data_ist_45_m.rename(columns={c: keyword})
     
     data_ist_45_m = data_ist_45_m.reset_index()
     
@@ -126,7 +121,7 @@ def gather_interest_on_a_keyword_over_time_by_city(keyword, dest_dir):
             print(count)
     
     # save dataframe to the destination
-    full_file_path = dest_dir+'trends_keyword_'+keyword.replace('ç', 'c')+'.csv'
+    full_file_path = dest_dir+'trends_keyword_'+keyword.replace(' ', '_').replace('ç', 'c').replace('ğ', 'g').replace('ü', 'u').replace('ö', 'o').replace('ş', 's').replace('ı', 'i').replace('ç', 'c')+'.csv'
     with open(full_file_path, 'w') as output_file:
         data_result.to_csv(output_file, encoding='utf-8', index=False)
     #data_result.to_csv(os.path.join(dest_dir, r'trends_keyword_'+keyword+'.csv'), encoding='utf-8', index=False)
@@ -135,7 +130,7 @@ def gather_interest_on_a_keyword_over_time_by_city(keyword, dest_dir):
     
 
 
-data = gather_interest_on_a_keyword_over_time_by_city('ilaç', 
+data = gather_interest_on_a_keyword_over_time_by_city('vitamin', 
                                                '/home/a/Desktop/AnacondaProjects/Competition2020_ABC/datasets/google_trends/')
 
 
