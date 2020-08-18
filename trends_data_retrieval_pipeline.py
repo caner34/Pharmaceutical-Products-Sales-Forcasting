@@ -130,7 +130,7 @@ def gather_interest_on_a_keyword_over_time_by_city(keyword, dest_dir):
     
 
 
-data = gather_interest_on_a_keyword_over_time_by_city('vitamin', 
+data = gather_interest_on_a_keyword_over_time_by_city('hastane randevu', 
                                                '/home/a/Desktop/AnacondaProjects/Competition2020_ABC/datasets/google_trends/')
 
 
