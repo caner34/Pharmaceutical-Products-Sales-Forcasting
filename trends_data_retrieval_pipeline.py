@@ -130,8 +130,55 @@ def gather_interest_on_a_keyword_over_time_by_city(keyword, dest_dir):
     
 
 
+
+            
+def get_country_data(keyword, dest_dir):
+    pytrend = TrendReq()
+    # 'TR-34' as geo parameter returns the data for the city Istanbul
+    pytrend.build_payload(
+         kw_list=[keyword],
+         cat=0,
+         timeframe='2017-01-01 2020-05-01',
+         geo='TR',
+         gprop='')
+    data = pytrend.interest_over_time()
+    
+    data = data.reset_index()
+    
+    data['date'] = data['date'].astype(str)
+    data['month'] = data['date'].apply(lambda x: x.split('-')[1])
+    data['year'] = data['date'].apply(lambda x: x.split('-')[0])
+    data['Period'] = data['date'].apply(lambda x: x.split('-')[0]+x.split('-')[1])
+    data = data.groupby(['Period'])[keyword].mean().reset_index()
+    
+    new_keyword = keyword.replace(' ', '_').replace('ç', 'c').replace('ğ', 'g').replace('ü', 'u').replace('ö', 'o').replace('ş', 's').replace('ı', 'i').replace('ç', 'c')
+    
+    #data = data.drop(columns=['isPartial', 'month', 'year', 'date'], axis=1).rename(columns={keyword: new_keyword})
+    
+    full_file_path = dest_dir+'trends_tr_keyword_'+new_keyword+'.csv'
+    with open(full_file_path, 'w') as output_file:
+        data.to_csv(output_file, encoding='utf-8', index=False)
+    #data_result.to_csv(os.path.join(dest_dir, r'trends_keyword_'+keyword+'.csv'), encoding='utf-8', index=False)
+    print('Succesfully saved into {}'.format(full_file_path))
+    
+    return data
+  
+
+
+
 data = gather_interest_on_a_keyword_over_time_by_city('ASACOL', 
                                                '/home/a/Desktop/AnacondaProjects/Competition2020_ABC/datasets/google_trends/')
+
+
+
+keywords_to_download = ['hastane', 'hastane randevu', 'ilaç', 'baş ağrısı', 'grip', 'salgın', 'ASACOL', 'Biofenac', 'BioGaia', 'gastroenteroloji randevu', 'Medigard', 'mhrs', 'üroloji randevu', 'Xalfu', 'Salofalk', 'Asec', 'Xatral' ]
+
+
+for k in keywords_to_download:
+    print("\n\n\n"+k)
+    data_country = get_country_data(k, '/home/a/Desktop/AnacondaProjects/Competition2020_ABC/datasets/google_trends/country/')
+
+
 
 
 
